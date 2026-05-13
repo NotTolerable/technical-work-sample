@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model Physician {
+  id        String     @id @default(cuid())
+  name      String
+  specialty String
+  bio       String
+  location  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  timeSlots TimeSlot[]
+  bookings  Booking[]
+}
+
+model TimeSlot {
+  id          String    @id @default(cuid())
+  physicianId String
+  startTime   DateTime
+  endTime     DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  physician   Physician @relation(fields: [physicianId], references: [id], onDelete: Cascade)
+  bookings    Booking[]
+}
+
+model Booking {
+  id           String        @id @default(cuid())
+  physicianId  String
+  timeSlotId   String
+  patientName  String
+  patientEmail String
+  patientPhone String
+  reason       String
+  status       BookingStatus @default(PENDING)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  physician    Physician     @relation(fields: [physicianId], references: [id], onDelete: Restrict)
+  timeSlot     TimeSlot      @relation(fields: [timeSlotId], references: [id], onDelete: Restrict)
+}
