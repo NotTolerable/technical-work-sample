@@ -16,7 +16,11 @@ export type PhysicianWithAvailableSlots = {
   timeSlots: AvailableTimeSlot[];
 };
 
-const blockingStatuses = [BookingStatus.PENDING, BookingStatus.CONFIRMED];
+// Pending and confirmed bookings hold a slot; cancelled bookings intentionally free it.
+export const bookingBlockingStatuses = [
+  BookingStatus.PENDING,
+  BookingStatus.CONFIRMED,
+] as const;
 
 export async function getPhysiciansWithAvailableTimeSlots(): Promise<
   PhysicianWithAvailableSlots[]
@@ -46,7 +50,7 @@ export function availableTimeSlotWhere(): Prisma.TimeSlotWhereInput {
   return {
     bookings: {
       none: {
-        status: { in: blockingStatuses },
+        status: { in: [...bookingBlockingStatuses] },
       },
     },
   };
@@ -67,4 +71,21 @@ export async function getAvailableTimeSlotForBooking(
       physician: true,
     },
   });
+}
+
+export async function hasBlockingBookingForTimeSlot(
+  timeSlotId: string,
+  db: Prisma.TransactionClient | typeof prisma = prisma,
+  ignoredBookingId?: string,
+): Promise<boolean> {
+  const blockingBooking = await db.booking.findFirst({
+    where: {
+      id: ignoredBookingId ? { not: ignoredBookingId } : undefined,
+      timeSlotId,
+      status: { in: [...bookingBlockingStatuses] },
+    },
+    select: { id: true },
+  });
+
+  return Boolean(blockingBooking);
 }

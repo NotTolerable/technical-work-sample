@@ -86,7 +86,7 @@ export async function createBooking(
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
     )
     .catch((error: unknown) => {
-      if (isSerializableConflict(error)) {
+      if (isAvailabilityWriteConflict(error)) {
         return null;
       }
 
@@ -105,6 +105,7 @@ export async function createBooking(
   }
 
   revalidatePath("/book");
+  revalidatePath("/admin");
 
   return {
     status: "success",
@@ -119,11 +120,11 @@ export async function createBooking(
   };
 }
 
-function isSerializableConflict(error: unknown): error is { code: string } {
+function isAvailabilityWriteConflict(error: unknown): error is { code: string } {
   return (
     typeof error === "object" &&
     error !== null &&
     "code" in error &&
-    error.code === "P2034"
+    (error.code === "P2034" || error.code === "P2002")
   );
 }

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { BookingStatus, Prisma } from "@prisma/client";
+import { hasBlockingBookingForTimeSlot } from "@/lib/availability";
 import { prisma } from "@/lib/prisma";
 import { adminStatusUpdateSchema } from "@/lib/validations";
 
@@ -10,8 +11,6 @@ const allowedStatusTransitions: Record<BookingStatus, BookingStatus[]> = {
   [BookingStatus.CONFIRMED]: [BookingStatus.CANCELLED],
   [BookingStatus.CANCELLED]: [],
 };
-
-const blockingStatuses = [BookingStatus.PENDING, BookingStatus.CONFIRMED];
 
 export async function updateBookingStatus(formData: FormData) {
   const parsed = adminStatusUpdateSchema.safeParse({
@@ -44,21 +43,13 @@ export async function updateBookingStatus(formData: FormData) {
         throw new Error("That status update is not allowed for this booking.");
       }
 
-      if (nextStatus === BookingStatus.CONFIRMED) {
-        const conflictingBooking = await tx.booking.findFirst({
-          where: {
-            id: { not: booking.id },
-            timeSlotId: booking.timeSlotId,
-            status: { in: blockingStatuses },
-          },
-          select: { id: true },
-        });
-
-        if (conflictingBooking) {
-          throw new Error(
-            "This appointment time already has a pending or confirmed booking.",
-          );
-        }
+      if (
+        nextStatus === BookingStatus.CONFIRMED &&
+        (await hasBlockingBookingForTimeSlot(booking.timeSlotId, tx, booking.id))
+      ) {
+        throw new Error(
+          "This appointment time already has a pending or confirmed booking.",
+        );
       }
 
       await tx.booking.update({
