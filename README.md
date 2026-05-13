@@ -138,6 +138,7 @@ I used AI coding tools to speed up implementation, but I manually directed the p
 
 ## What I would improve with more time
 
+- Add a more visually appealing UI and work on polishing UX
 - Add authentication and role-based access for admins and physicians
 - Add automated tests for booking creation, validation, and status transitions
 - Add stronger production migration handling
