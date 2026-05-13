@@ -10,3 +10,8 @@ export const bookingRequestSchema = z.object({
 });
 
 export type BookingRequestInput = z.infer<typeof bookingRequestSchema>;
+
+export const adminStatusUpdateSchema = z.object({
+  bookingId: z.string().min(1, "Booking is required."),
+  status: z.enum(["CONFIRMED", "CANCELLED"]),
+});
