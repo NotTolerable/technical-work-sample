@@ -2,7 +2,7 @@
 
 A lightweight patient booking work sample focused on the core appointment workflow: patients can choose a physician, select an available time, submit appointment details, and admins can review and update booking statuses.
 
-Live demo: [https://patient-booking-mvp.vercel.app/]
+Live demo: https://patient-booking-mvp.vercel.app/
 
 ## Tech stack
 
