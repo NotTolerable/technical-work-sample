@@ -1,26 +1,35 @@
-import { PrimaryLink } from "@/components/ui/PrimaryLink";
+import { BookingFlow } from "@/components/booking/BookingFlow";
+import { getPhysiciansWithAvailableTimeSlots } from "@/lib/availability";
 
-export default function BookPage() {
+export const dynamic = "force-dynamic";
+
+export default async function BookPage() {
+  const physicians = await getPhysiciansWithAvailableTimeSlots();
+  const serializedPhysicians = physicians.map((physician) => ({
+    ...physician,
+    timeSlots: physician.timeSlots.map((timeSlot) => ({
+      ...timeSlot,
+      startTime: timeSlot.startTime.toISOString(),
+      endTime: timeSlot.endTime.toISOString(),
+    })),
+  }));
+
   return (
-    <section className="mx-auto max-w-3xl px-6 py-16 sm:py-24">
-      <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
-        Patient booking
-      </p>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-        Book an appointment
-      </h1>
-      <p className="mt-4 text-lg leading-8 text-slate-600">
-        This placeholder will become the patient flow for selecting a physician, choosing an
-        available time, and submitting required booking details.
-      </p>
-      <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-slate-600">
-        Booking form coming next. No database or scheduling logic has been added
-        yet.
+    <section className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
+      <div className="max-w-3xl">
+        <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
+          Patient booking
+        </p>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          Book an appointment
+        </h1>
+        <p className="mt-4 text-lg leading-8 text-slate-600">
+          Choose a physician, select an available appointment time, and submit a
+          pending booking request for admin review.
+        </p>
       </div>
-      <div className="mt-8">
-        <PrimaryLink href="/" variant="secondary">
-          Back to homepage
-        </PrimaryLink>
+      <div className="mt-10">
+        <BookingFlow physicians={serializedPhysicians} />
       </div>
     </section>
   );
