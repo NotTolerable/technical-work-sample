@@ -62,15 +62,26 @@ DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
 
 The Prisma schema lives in `prisma/schema.prisma` and reads its Postgres connection from `DATABASE_URL`.
 
-After installing dependencies and configuring `DATABASE_URL`, run:
+After installing dependencies and configuring `DATABASE_URL`, run the local development commands:
 
 ```bash
 npm run prisma:generate
 npm run prisma:migrate
-npm run prisma:seed
 ```
 
-The seed script resets the three MVP tables, then creates three physicians with three appointment slots each for local development and demos.
+For production or deployed environments such as Vercel, apply the committed migrations with:
+
+```bash
+npx prisma migrate deploy
+```
+
+Use seed data only when resetting demo sample data is acceptable:
+
+```bash
+npx prisma db seed
+```
+
+The seed script resets the three MVP tables, then creates three physicians with three appointment slots each for local development and demos. Do not run `npx prisma db seed` against a production database that contains real booking data unless intentionally resetting that demo data is acceptable.
 
 ## Booking business rules
 
@@ -84,4 +95,4 @@ Future booking implementation should follow these rules:
 
 ## Deployment notes
 
-The planned deployment target is Vercel. Configure `DATABASE_URL` in Vercel Environment Variables using the connection string from your Postgres provider, then run Prisma migrations against that database as part of your deployment workflow. The `postinstall` script runs `prisma generate` so Prisma Client is generated during dependency installation.
+The planned deployment target is Vercel. Configure `DATABASE_URL` in Vercel Environment Variables using the connection string from your Postgres provider, then run `npx prisma migrate deploy` against that database as part of your deployment workflow. Run `npx prisma db seed` only for demo environments where resetting and recreating sample physicians and appointment slots is acceptable. The `postinstall` script runs `prisma generate` so Prisma Client is generated during dependency installation.
