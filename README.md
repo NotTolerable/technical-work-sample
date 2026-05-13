@@ -13,7 +13,7 @@ The intended core loop is:
 5. Admin reviews the booking.
 6. Admin confirms or cancels the booking.
 
-This scaffold currently includes a polished homepage, a patient booking placeholder route, and an admin dashboard placeholder route. Database logic, authentication, payments, calendar integrations, notifications, insurance logic, and medical records are intentionally not implemented yet.
+This scaffold currently includes a polished homepage, a patient booking placeholder route, an admin dashboard placeholder route, and Prisma database setup. Runtime booking logic, authentication, payments, calendar integrations, notifications, insurance logic, and medical records are intentionally not implemented yet.
 
 ## Tech stack
 
@@ -21,7 +21,7 @@ This scaffold currently includes a polished homepage, a patient booking placehol
 - TypeScript
 - Tailwind CSS
 - ESLint
-- Planned: Prisma with Postgres for deployed storage
+- Prisma with Postgres for deployed storage
 - Planned: Vercel deployment
 - Planned: Zod validation for patient-submitted data
 
@@ -52,7 +52,25 @@ npm run build
 
 ## Environment variables
 
-No environment variables are required for the current scaffold. When Prisma and Postgres are added, document required variables such as `DATABASE_URL` here.
+Copy `.env.example` to `.env` for local development and set `DATABASE_URL` to a Postgres connection string. Use the environment variable provided by Vercel, Neon, Supabase, or another Postgres host in deployed environments. Do not commit real database credentials.
+
+```bash
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
+```
+
+## Database setup
+
+The Prisma schema lives in `prisma/schema.prisma` and reads its Postgres connection from `DATABASE_URL`.
+
+After installing dependencies and configuring `DATABASE_URL`, run:
+
+```bash
+npm run prisma:generate
+npm run prisma:migrate
+npm run prisma:seed
+```
+
+The seed script resets the three MVP tables, then creates three physicians with three appointment slots each for local development and demos.
 
 ## Booking business rules
 
@@ -66,4 +84,4 @@ Future booking implementation should follow these rules:
 
 ## Deployment notes
 
-The planned deployment target is Vercel. Add Vercel and Postgres setup notes when persistence is implemented.
+The planned deployment target is Vercel. Configure `DATABASE_URL` in Vercel Environment Variables using the connection string from your Postgres provider, then run Prisma migrations against that database as part of your deployment workflow. The `postinstall` script runs `prisma generate` so Prisma Client is generated during dependency installation.
