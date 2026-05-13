@@ -1,16 +1,26 @@
-# Patient Booking Flow
+# Patient Booking MVP
 
-A lightweight patient booking MVP built for a technical work sample. The app focuses on the core appointment workflow: patients can choose a physician, select an available time, submit appointment details, and admins can review and update booking statuses.
+A lightweight patient booking work sample focused on the core appointment workflow: patients can choose a physician, select an available time, submit appointment details, and admins can review and update booking statuses.
+
+Live demo: [https://patient-booking-mvp.vercel.app/]
+
+## Tech stack
+
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- Prisma
+- Postgres
+- Zod
+- Vercel
 
 ## How to run the project
 
-### 1. Install dependencies
+Install dependencies:
 
 ```bash
 npm install
 ```
-
-### 2. Configure environment variables
 
 Create a `.env` file in the project root:
 
@@ -18,30 +28,20 @@ Create a `.env` file in the project root:
 DATABASE_URL="your-postgres-connection-string"
 ```
 
-For deployment, configure `DATABASE_URL` in Vercel Environment Variables.
-
-### 3. Set up the database
-
-For the current demo/work-sample setup:
+Set up the database for the demo:
 
 ```bash
 npx prisma db push
 npx prisma db seed
 ```
 
-`db push` syncs the Prisma schema to the database.
-
-`db seed` inserts sample physicians and appointment slots.
-
-Note: the seed script resets the sample MVP data before recreating the demo physicians and time slots.
-
-### 4. Run the development server
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Then open:
+Open:
 
 ```text
 http://localhost:3000
@@ -54,17 +54,17 @@ Main routes:
 /admin
 ```
 
-### 5. Build for production
+Build for production:
 
 ```bash
 npm run build
 ```
 
+Note: the seed script resets the demo data before recreating the sample physicians and appointment slots.
+
 ## What I built
 
-I built a simple patient booking flow with two main surfaces: a patient-facing booking page and an admin-facing review dashboard.
-
-Working Demo: https://technical-work-sample.vercel.app
+I built a simple patient booking flow with two main surfaces.
 
 ### Patient-facing booking flow
 
@@ -82,13 +82,13 @@ New bookings default to `PENDING`.
 
 Admins can:
 
-- View upcoming booking requests
-- Filter bookings by status
+- View booking requests
+- Filter bookings by all, pending, confirmed, and cancelled
 - See patient details, physician, appointment time, reason, status, and created date
 - Confirm pending bookings
 - Cancel pending or confirmed bookings
 
-The supported booking statuses are:
+The supported statuses are:
 
 ```text
 PENDING
@@ -98,66 +98,58 @@ CANCELLED
 
 ## Key technical/product decisions
 
-### Focused on the core product loop
+### Focused on the core booking loop
 
 I focused on the main workflow:
 
 ```text
-Patient books appointment → admin reviews request → admin confirms or cancels
+Patient requests appointment → admin reviews request → admin confirms or cancels
 ```
 
-I intentionally avoided adding unrelated features like authentication, payments, insurance logic, calendar integrations, email notifications, or medical records because the goal of the work sample was to demonstrate product functionality, implementation quality, and tradeoff thinking.
+I intentionally left out authentication, payments, insurance logic, calendar integrations, email/SMS notifications, and medical records because they were outside the requested scope. The goal was to build a complete, reviewable MVP around the core booking functionality.
 
-### Used a lightweight database-backed setup
+### Used a database-backed setup
 
-I used Prisma with Postgres so bookings persist across sessions and the patient/admin flows share the same data source. This makes the deployed app feel more realistic than a purely local or mock-data version.
+I used Prisma with Postgres so the patient and admin flows share the same persistent data source. This makes the deployed app more realistic than a purely local or mock-data version.
 
-For the demo setup, I used Prisma schema syncing and seed data to keep the project easy to run and review. In a production system, I would use a stricter migration workflow and avoid resetting data through seed scripts.
+For this work sample, I used Prisma schema syncing and seed data to keep setup simple. In a production system, I would use a stricter migration workflow and avoid resetting data through seed scripts.
 
-### Kept booking state server-side
+### Kept booking logic server-side
 
-Booking creation and admin status updates are handled server-side. This keeps the main business rules out of the browser and prevents the UI from being the only layer enforcing availability.
+Booking creation and admin status updates are handled server-side. Patient form submissions and admin status updates are validated with Zod before writing to the database.
 
-### Added server-side validation
+### Prevented duplicate active bookings
 
-Patient booking submissions are validated with Zod. Required fields include:
+A time slot is unavailable if it already has a `PENDING` or `CONFIRMED` booking.
 
-- Physician
-- Time slot
-- Patient name
-- Patient email
-- Patient phone
-- Reason for visit
+`CANCELLED` bookings do not block a time slot, so cancelling a booking makes that slot available again.
 
-Admin status updates are also validated before being applied.
+The app checks availability before showing time slots and re-checks availability when the patient submits the form, so the UI is not the only layer enforcing booking rules.
 
-### Prevented duplicate booking of active slots
+### Separated patient booking from admin review
 
-A time slot is considered unavailable if it already has a `PENDING` or `CONFIRMED` booking.
+The app separates the patient-facing booking flow from the admin-facing review dashboard because those are distinct jobs in the product workflow.
 
-`CANCELLED` bookings do not block a slot, so cancelling a booking makes that time available again.
+The `/admin` route is intentionally unauthenticated for this work sample to keep the demo easy to review. In production, it would require role-based authentication.
 
-The booking flow checks availability before showing slots and re-checks availability when the patient submits the form. This avoids relying only on stale client-side state.
+### AI usage
 
-### Treated admin review as intentionally unauthenticated for the work sample
-
-The `/admin` page is not protected by authentication. This was intentional to keep the review flow easy to access and avoid spending time on auth infrastructure that was outside the requested scope.
-
-In production, the admin dashboard would require role-based authentication.
-
-### Used AI as an implementation assistant
-
-I used AI coding tools to speed up implementation, but I manually controlled the product scope, task breakdown, review process, and technical decisions. I worked in small tasks rather than one large generation step so the implementation stayed focused and easier to verify.
+I used AI coding tools to speed up implementation, but I manually directed the product scope, task breakdown, review, tradeoff decisions, and verification process.
 
 ## What I would improve with more time
 
 - Add authentication and role-based access for admins and physicians
+- Add automated tests for booking creation, validation, and status transitions
+- Add stronger production migration handling
 - Add physician-side availability management
-- Add email or SMS confirmations for patients
+- Add email/SMS confirmations after appointments are confirmed
 - Add calendar integration for confirmed appointments
-- Add automated tests for booking creation, status transitions, and duplicate-slot prevention
-- Add stronger database constraints around active bookings per time slot
-- Add better production migration handling instead of relying on demo-oriented schema syncing
-- Add audit history for booking status changes
-- Improve admin search and filtering for larger booking volumes
-- Add more detailed loading, error, and success states
+- Add admin search, pagination, and date-range filtering for larger booking volumes
+- Add production-safe logging and error reporting
+
+## Known limitations
+
+- The admin dashboard is not authenticated and is not production-ready for real patient data.
+- The app does not include calendar, email, SMS, payment, insurance, or medical record functionality.
+- The seed script resets demo data and should only be used in local/demo environments.
+- The app assumes `DATABASE_URL` is configured before database-backed routes are used.
