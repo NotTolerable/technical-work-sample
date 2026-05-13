@@ -29,8 +29,8 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   const bookings = await getAdminBookings(activeFilter);
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-12 sm:py-16">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+    <section className="mx-auto max-w-7xl px-6 py-10 sm:py-14">
+      <div className="rounded-[2rem] border border-white/80 bg-white/75 p-6 shadow-sm backdrop-blur sm:p-8 lg:flex lg:items-end lg:justify-between lg:gap-6">
         <div className="max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
             Admin review
@@ -46,13 +46,13 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         <StatusFilter activeFilter={activeFilter} />
       </div>
 
-      <div className="mt-8 rounded-2xl border border-sky-100 bg-sky-50 p-4 text-sm leading-6 text-sky-900">
+      <div className="mt-6 rounded-2xl border border-sky-100 bg-sky-50 p-4 text-sm leading-6 text-sky-900">
         This work-sample dashboard is intentionally unauthenticated. A production
         version would require authentication and role checks before exposing
         patient contact details or status updates.
       </div>
 
-      <div className="mt-8">
+      <div className="mt-6">
         <BookingTable bookings={bookings} />
       </div>
     </section>

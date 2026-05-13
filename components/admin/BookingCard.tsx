@@ -9,7 +9,7 @@ type BookingCardProps = {
 
 export function BookingCard({ booking }: BookingCardProps) {
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <article className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-slate-950">
@@ -20,7 +20,7 @@ export function BookingCard({ booking }: BookingCardProps) {
         <StatusBadge status={booking.status} />
       </div>
 
-      <dl className="mt-5 grid gap-4 text-sm">
+      <dl className="mt-5 grid gap-4 rounded-2xl bg-slate-50 p-4 text-sm">
         <BookingDetail label="Appointment" value={formatAppointment(booking)} />
         <BookingDetail label="Email" value={booking.patientEmail} />
         <BookingDetail label="Phone" value={booking.patientPhone} />
@@ -47,7 +47,7 @@ export function StatusActions({ booking }: BookingCardProps) {
 
   if (actions.length === 0) {
     return (
-      <p className="mt-5 rounded-xl bg-slate-50 px-3 py-2 text-sm text-slate-600">
+      <p className="mt-5 rounded-xl bg-slate-50 px-3 py-2 text-sm text-slate-600 ring-1 ring-inset ring-slate-200">
         No further status updates are available.
       </p>
     );

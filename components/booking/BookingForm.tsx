@@ -47,7 +47,7 @@ export function BookingForm({
   return (
     <form
       action={formAction}
-      className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+      className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
     >
       <input
         name="physicianId"
@@ -60,21 +60,31 @@ export function BookingForm({
         value={selectedTimeSlot?.id ?? ""}
       />
 
-      <div>
-        <h2 className="text-lg font-semibold text-slate-950">Patient details</h2>
-        <p className="mt-1 text-sm text-slate-600">
-          Enter the required information to submit a pending booking request.
-        </p>
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-950">Patient details</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Enter the required information to submit a pending booking request.
+          </p>
+        </div>
+        {canSubmit ? (
+          <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700 ring-1 ring-inset ring-slate-200">
+            <span className="block font-semibold text-slate-950">
+              Ready to submit
+            </span>
+            Your selected physician and time will be reviewed by an admin.
+          </div>
+        ) : null}
       </div>
 
       {state.status === "error" && state.message ? (
-        <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">
           {state.message}
         </div>
       ) : null}
 
       {physicianError || timeSlotError ? (
-        <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+        <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-medium text-amber-800">
           {physicianError ?? timeSlotError}
         </div>
       ) : null}
@@ -85,7 +95,7 @@ export function BookingForm({
           <input
             aria-describedby={nameError ? "patientName-error" : undefined}
             aria-invalid={Boolean(nameError)}
-            className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
+            className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
             name="patientName"
             placeholder="Jordan Lee"
             required
@@ -106,7 +116,7 @@ export function BookingForm({
           <input
             aria-describedby={emailError ? "patientEmail-error" : undefined}
             aria-invalid={Boolean(emailError)}
-            className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
+            className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
             name="patientEmail"
             placeholder="jordan@example.com"
             required
@@ -127,7 +137,7 @@ export function BookingForm({
           <input
             aria-describedby={phoneError ? "patientPhone-error" : undefined}
             aria-invalid={Boolean(phoneError)}
-            className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
+            className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
             name="patientPhone"
             placeholder="(555) 123-4567"
             required
@@ -150,7 +160,7 @@ export function BookingForm({
           <textarea
             aria-describedby={reasonError ? "reason-error" : undefined}
             aria-invalid={Boolean(reasonError)}
-            className="mt-2 min-h-28 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
+            className="mt-2 min-h-28 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
             name="reason"
             placeholder="Briefly describe what you would like to discuss."
             required
@@ -164,7 +174,7 @@ export function BookingForm({
       </div>
 
       <button
-        className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-sky-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 disabled:cursor-not-allowed disabled:bg-slate-300 sm:w-auto"
+        className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-sky-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 disabled:cursor-not-allowed disabled:bg-slate-300 sm:w-auto"
         disabled={!canSubmit || isPending}
         type="submit"
       >

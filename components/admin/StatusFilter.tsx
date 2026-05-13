@@ -9,12 +9,17 @@ const filters: { label: string; value: AdminStatusFilter }[] = [
   { label: "Cancelled", value: "cancelled" },
 ];
 
-export function StatusFilter({ activeFilter }: { activeFilter: AdminStatusFilter }) {
+export function StatusFilter({
+  activeFilter,
+}: {
+  activeFilter: AdminStatusFilter;
+}) {
   return (
-    <nav aria-label="Filter bookings by status" className="flex flex-wrap gap-2">
+    <nav aria-label="Filter bookings by status" className="mt-6 flex flex-wrap gap-2 lg:mt-0">
       {filters.map((filter) => {
         const isActive = filter.value === activeFilter;
-        const href = filter.value === "all" ? "/admin" : `/admin?status=${filter.value}`;
+        const href =
+          filter.value === "all" ? "/admin" : `/admin?status=${filter.value}`;
 
         return (
           <Link

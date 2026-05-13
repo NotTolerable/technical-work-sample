@@ -15,11 +15,11 @@ type BookingTableProps = {
 export function BookingTable({ bookings }: BookingTableProps) {
   if (bookings.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
+      <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">
         <h2 className="text-lg font-semibold text-slate-950">No bookings found</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">
           There are no bookings for this filter yet. New patient requests will
-          appear here after submission.
+          appear here after submission or status updates.
         </p>
       </div>
     );
@@ -33,10 +33,10 @@ export function BookingTable({ bookings }: BookingTableProps) {
         ))}
       </div>
 
-      <div className="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:block">
+      <div className="hidden overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm lg:block">
         <table className="min-w-full divide-y divide-slate-200">
           <caption className="sr-only">Upcoming appointment bookings</caption>
-          <thead className="bg-slate-50">
+          <thead className="bg-slate-50/80">
             <tr>
               <TableHeader>Patient</TableHeader>
               <TableHeader>Physician</TableHeader>
@@ -83,7 +83,7 @@ export function BookingTable({ bookings }: BookingTableProps) {
 function TableHeader({ children }: { children: ReactNode }) {
   return (
     <th
-      className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600"
+      className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-600"
       scope="col"
     >
       {children}
@@ -92,5 +92,5 @@ function TableHeader({ children }: { children: ReactNode }) {
 }
 
 function TableCell({ children }: { children: ReactNode }) {
-  return <td className="px-4 py-4 align-top text-sm text-slate-700">{children}</td>;
+  return <td className="px-5 py-5 align-top text-sm text-slate-700">{children}</td>;
 }

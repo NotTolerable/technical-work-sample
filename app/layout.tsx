@@ -19,7 +19,7 @@ export default function RootLayout({
           <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
             <nav
               aria-label="Primary navigation"
-              className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4"
+              className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
             >
               <Link className="text-base font-semibold text-slate-950" href="/">
                 Patient Booking MVP
