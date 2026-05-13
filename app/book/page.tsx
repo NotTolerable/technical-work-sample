@@ -1,6 +1,8 @@
 import { BookingFlow } from "@/components/booking/BookingFlow";
 import { getPhysiciansWithAvailableTimeSlots } from "@/lib/availability";
 
+export const dynamic = "force-dynamic";
+
 export default async function BookPage() {
   const physicians = await getPhysiciansWithAvailableTimeSlots();
   const serializedPhysicians = physicians.map((physician) => ({
